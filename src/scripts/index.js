@@ -2,10 +2,13 @@ import "../pages/index.css";
 import { initialCards } from "../scripts/cards.js";
 import {
   openPopup,
-  closePopup,
-  overlayPopupClose,
+  closePopup
 } from "../components/modal.js";
-import { createCard } from "../components/card.js";
+import { 
+  createCard,
+  handleCardDelete,
+  handleCardLike
+} from "../components/card.js";
 
 const cardsContainer = document.querySelector(".places__list");
 
@@ -40,16 +43,6 @@ function handleCardClick(name, link) {
   imagePopupImage.alt = name;
   imagePopupCaption.textContent = name;
   openPopup(imagePopup);
-}
-
-// Удаление карточки
-function handleCardDelete(cardElement) {
-  cardElement.remove();
-}
-
-// Переключение лайка
-function handleCardLike(likeButton) {
-  likeButton.classList.toggle('card__like-button_is-active');
 }
 
 // Рендеринг карточек

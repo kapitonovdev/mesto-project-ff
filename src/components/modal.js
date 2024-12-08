@@ -19,12 +19,3 @@ function handleEscClose(event) {
     }
   }
 }
-
-// Закрытие попапа по клику на оверлей
-export function overlayPopupClose(popup) {
-  popup.addEventListener('click', (event) => {
-    if (event.target === popup) {
-      closePopup(popup);
-    }
-  });
-}

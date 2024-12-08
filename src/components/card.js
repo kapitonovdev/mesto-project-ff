@@ -23,3 +23,13 @@ export function createCard(cardData, { onImageClick, onDeleteClick, onLikeClick 
 
   return cardElement;
 }
+
+// Удаление карточки
+export function handleCardDelete(cardElement) {
+  cardElement.remove();
+}
+
+// Переключение лайка
+export function handleCardLike(likeButton) {
+  likeButton.classList.toggle('card__like-button_is-active');
+}
