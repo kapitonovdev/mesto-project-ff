@@ -10,6 +10,7 @@ import {
   handleCardLike
 } from "../components/card.js";
 import { enableValidation, clearValidation } from '../components/validation.js';
+import { getUserInfo, getCards } from '../components/api.js';
 
 
 const validationConfig = {
@@ -143,6 +144,24 @@ profileEditForm.addEventListener("submit", handleProfileEditFormSubmit);
 
 // Обработчик отправки для формы добавления карточки
 cardAddForm.addEventListener("submit", handleCardAddFormSubmit);
+
+// Функция обновления DOM
+function updateUserInfo({ name, about, avatar }) {
+  profileName.textContent = name;
+  profileDescription.textContent = about;
+  profileAvatar.style.backgroundImage = `url(${avatar})`;
+}
+
+// Загрузка информации о пользователе при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+  getUserInfo()
+    .then((userData) => {
+      updateUserInfo(userData);
+    })
+    .catch((error) => {
+      console.error('Failed to load user info:', error);
+    });
+});
 
 renderCards(initialCards);
 initializePopups();
