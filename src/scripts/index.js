@@ -9,6 +9,17 @@ import {
   handleCardDelete,
   handleCardLike
 } from "../components/card.js";
+import { enableValidation, clearValidation } from '../components/validation.js';
+
+
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+};
 
 const cardsContainer = document.querySelector(".places__list");
 
@@ -61,6 +72,7 @@ function renderCards(cardsData) {
 function handleProfileEditButtonClick() {
   profileNameInput.value = profileName.textContent;
   profileJobInput.value = profileJob.textContent;
+  clearValidation(profileEditForm, validationConfig);
   openPopup(profileEditPopup);
 }
 
@@ -119,7 +131,11 @@ function initializePopups() {
   });
 
   profileEditButton.addEventListener("click", handleProfileEditButtonClick);
-  cardAddButton.addEventListener("click", () => openPopup(cardAddPopup));
+  cardAddButton.addEventListener("click", () => {
+    clearValidation(cardAddForm, validationConfig);
+    cardAddForm.reset();
+    openPopup(cardAddPopup);
+  });
 }
 
 // Обработчик отправки для формы редактирования профиля
@@ -130,3 +146,4 @@ cardAddForm.addEventListener("submit", handleCardAddFormSubmit);
 
 renderCards(initialCards);
 initializePopups();
+enableValidation(validationConfig);

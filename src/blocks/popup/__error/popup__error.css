@@ -1,0 +1,10 @@
+.popup__error {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: calc(100% + 5px);
+  display: block;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1;
+  color: #ff0000;
+}

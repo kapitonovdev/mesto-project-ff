@@ -1,0 +1,6 @@
+.popup__label {
+  display: block;
+  position: relative;
+  padding-block-start: 15px;
+  margin-block-end: 15px;
+}
