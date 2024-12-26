@@ -37,6 +37,7 @@ const imagePopupCaption = imagePopup.querySelector(".popup__caption");
 const profileEditButton = document.querySelector(".profile__edit-button");
 const profileName = document.querySelector(".profile__title");
 const profileJob = document.querySelector(".profile__description");
+const profileAvatar = document.querySelector(".profile__image");
 const cardAddButton = document.querySelector(".profile__add-button");
 
 // Форма редактирования профиля и её поля
@@ -148,7 +149,7 @@ cardAddForm.addEventListener("submit", handleCardAddFormSubmit);
 // Функция обновления DOM
 function updateUserInfo({ name, about, avatar }) {
   profileName.textContent = name;
-  profileDescription.textContent = about;
+  profileJob.textContent = about;
   profileAvatar.style.backgroundImage = `url(${avatar})`;
 }
 
