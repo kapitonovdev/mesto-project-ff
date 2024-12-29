@@ -1,5 +1,4 @@
 import "../pages/index.css";
-import { initialCards } from "../scripts/cards.js";
 import {
   openPopup,
   closePopup
@@ -41,9 +40,12 @@ const profileAvatar = document.querySelector(".profile__image");
 const cardAddButton = document.querySelector(".profile__add-button");
 
 // Форма редактирования профиля и её поля
-const profileEditForm = profileEditPopup.querySelector(".popup__form");
-const profileNameInput = profileEditForm.querySelector(".popup__input_type_name");
-const profileJobInput = profileEditForm.querySelector(".popup__input_type_description");
+// const profileEditForm = profileEditPopup.querySelector(".popup__form");
+const profileEditForm = document.forms["edit-profile"];
+// const profileNameInput = profileEditForm.querySelector(".popup__input_type_name");
+const profileNameInput = document.forms["edit-profile"].name;
+// const profileJobInput = profileEditForm.querySelector(".popup__input_type_description");
+const profileJobInput = document.forms["edit-profile"].description;
 
 // Форма добавления карточки и её поля
 const cardAddForm = cardAddPopup.querySelector(".popup__form");
@@ -153,17 +155,17 @@ function updateUserInfo({ name, about, avatar }) {
   profileAvatar.style.backgroundImage = `url(${avatar})`;
 }
 
-// Загрузка информации о пользователе при загрузке страницы
+
 document.addEventListener('DOMContentLoaded', () => {
-  getUserInfo()
-    .then((userData) => {
+  Promise.all([getUserInfo(), getCards()])
+    .then(([userData, cardsData]) => {
       updateUserInfo(userData);
+      renderCards(cardsData);      
     })
-    .catch((error) => {
-      console.error('Failed to load user info:', error);
+    .catch((err) => {
+      console.log('Error:', err);
     });
 });
 
-renderCards(initialCards);
 initializePopups();
 enableValidation(validationConfig);
