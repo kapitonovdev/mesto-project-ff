@@ -58,3 +58,21 @@ export function addCard({ name, link }) {
     }),
   });
 }
+
+export function deleteCard(cardId) {
+  return request(`/cards/${cardId}`, {
+    method: 'DELETE',
+  });
+}
+
+export function addLike(cardId) {
+  return request(`/cards/likes/${cardId}`, {
+    method: 'PUT',
+  });
+}
+
+export function removeLike(cardId) {
+  return request(`/cards/likes/${cardId}`, {
+    method: 'DELETE',
+  });
+}

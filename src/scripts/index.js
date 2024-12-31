@@ -14,7 +14,8 @@ import {
   getCards,
   setUserInfo,
   setUserAvatar,
-  addCard
+  addCard,
+  deleteCard
 } from '../components/api.js';
 
 
@@ -33,6 +34,7 @@ const cardsContainer = document.querySelector(".places__list");
 const profileEditPopup = document.querySelector(".popup_type_edit");
 const cardAddPopup = document.querySelector(".popup_type_new-card");
 const imagePopup = document.querySelector(".popup_type_image");
+const deleteCardPopup = document.querySelector('.popup_type_delete-card');
 
 // Элементы внутри попапа изображения
 const imagePopupImage = imagePopup.querySelector(".popup__image");
@@ -52,17 +54,25 @@ const profileEditForm = document.forms["edit-profile"];
 const profileNameInput = document.forms["edit-profile"].name;
 // const profileJobInput = profileEditForm.querySelector(".popup__input_type_description");
 const profileJobInput = document.forms["edit-profile"].description;
+// Форма удаления карточки
+const deleteCardForm = document.forms["delete-card"];
+
+// Глобальные переменные для запоминания, какую карточку хотим удалить
+let cardIdToDelete = null;
+let cardElementToDelete = null;
 
 // Попап добавления аватара
 const avatarEditPopup = document.querySelector('.popup_type_avatar');
 const avatarEditForm = document.forms["edit-avatar"]; // <form name="edit-avatar" ...>
 const avatarInput = avatarEditForm.querySelector('.popup__input_type_url');
 
-
 // Форма добавления карточки и её поля
 const cardAddForm = cardAddPopup.querySelector(".popup__form");
 const cardNameInput = cardAddForm.querySelector(".popup__input_type_card-name");
 const cardLinkInput = cardAddForm.querySelector(".popup__input_type_url");
+
+// ID пользователя
+let currentUserId;
 
 // Функция открытия imagePopup
 function handleCardClick(name, link) {
@@ -77,8 +87,9 @@ function renderCards(cardsData) {
   cardsData.forEach((cardData) => {
     const cardElement = createCard(cardData, {
       onImageClick: handleCardClick,
-      onDeleteClick: handleCardDelete,
+      onDeleteClick: openDeletePopup,
       onLikeClick: handleCardLike,
+      userId: currentUserId
     });
     cardsContainer.append(cardElement);
   });
@@ -141,6 +152,29 @@ function handleCardAddFormSubmit(event) {
     .catch((error) => {
       console.error('Ошибка при добавлении карточки:', error);
     });
+}
+
+// Обработчик удаления карточки
+deleteCardForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  if (!cardIdToDelete) return;
+
+  deleteCard(cardIdToDelete)
+    .then(() => {
+      // Удаляем элемент из DOM
+      cardElementToDelete.remove();
+      cardIdToDelete = null;
+      cardElementToDelete = null;
+      closePopup(deleteCardPopup);
+    })
+    .catch((err) => console.log('Ошибка при удалении карточки:', err));
+});
+
+function openDeletePopup(cardData, cardElement) {
+  cardIdToDelete = cardData._id;
+  cardElementToDelete = cardElement;
+  openPopup(deleteCardPopup);
 }
 
 // Инициализация попапов
@@ -214,10 +248,11 @@ avatarEditIcon.addEventListener('click', () => {
   openPopup(avatarEditPopup);
 });
 
-
 document.addEventListener('DOMContentLoaded', () => {
   Promise.all([getUserInfo(), getCards()])
     .then(([userData, cardsData]) => {
+      currentUserId = userData._id;
+
       updateUserInfo(userData);
       renderCards(cardsData);      
     })
