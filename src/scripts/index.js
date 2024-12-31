@@ -9,7 +9,13 @@ import {
   handleCardLike
 } from "../components/card.js";
 import { enableValidation, clearValidation } from '../components/validation.js';
-import { getUserInfo, getCards, setUserInfo, setUserAvatar } from '../components/api.js';
+import { 
+  getUserInfo,
+  getCards,
+  setUserInfo,
+  setUserAvatar,
+  addCard
+} from '../components/api.js';
 
 
 const validationConfig = {
@@ -115,21 +121,26 @@ function handleCardAddFormSubmit(event) {
     link: cardLinkInput.value,
   };
 
-  // Создаём новую карточку с помощью createCard
-  const newCardElement = createCard(newCardData, {
-    onImageClick: handleCardClick,
-    onDeleteClick: handleCardDelete,
-    onLikeClick: handleCardLike,
-  });
+  addCard(newCardData)
+    .then((cardFromServer) => {
+      const newCardElement = createCard(cardFromServer, {
+        onImageClick: handleCardClick,
+        onDeleteClick: handleCardDelete,
+        onLikeClick: handleCardLike,
+      });
 
-  // Добавляем новую карточку в начало контейнера
-  cardsContainer.prepend(newCardElement);
+      // Добавляем карточку в начало
+      cardsContainer.prepend(newCardElement);
 
-  // Очищаем форму
-  cardAddForm.reset();
+      // Очищаем форму
+      cardAddForm.reset();
 
-  // Закрываем попап после добавления карточки
-  closePopup(cardAddPopup);
+      // Закрываем попап после добавления карточки
+      closePopup(cardAddPopup);          
+    })
+    .catch((error) => {
+      console.error('Ошибка при добавлении карточки:', error);
+    });
 }
 
 // Инициализация попапов
@@ -190,7 +201,6 @@ function handleAvatarFormSubmit(event) {
     })
     .catch((err) => {
       console.error('Ошибка при обновлении аватара:', err);
-      // Можно показать сообщение об ошибке
     });
 }
 
@@ -198,7 +208,6 @@ avatarEditForm.addEventListener('submit', handleAvatarFormSubmit);
 
 const avatarEditIcon = document.querySelector('.profile__image-edit-icon');
 avatarEditIcon.addEventListener('click', () => {
-  // Перед открытием можно очистить ошибки валидации, если надо
   clearValidation(avatarEditForm, validationConfig);
   avatarEditForm.reset();
 

@@ -48,3 +48,13 @@ export function setUserAvatar(avatarUrl) {
     })
   });
 }
+
+export function addCard({ name, link }) {
+  return request('/cards', {
+    method: 'POST',
+    body: JSON.stringify({
+      name,
+      link
+    }),
+  });
+}
