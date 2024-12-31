@@ -1,0 +1,47 @@
+.profile__image-edit-icon {
+  inline-size: 100%;
+  block-size: 100%;
+  border-radius: 50%;
+  padding: 0;
+  margin-inline-end: 29px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: none;
+}
+
+.profile__image-edit-icon::after {
+  content: '';
+  position: absolute;
+  inline-size: 100%;
+  block-size: 100%;
+  top: 0;
+  left: 0;
+  background: rgb(0 0 0 / 0.8) url("../../../images/edit-icon.svg") center no-repeat;
+  background-size: 26px 26px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.profile__image-edit-icon:focus {
+  outline: none;
+}
+
+.profile__image-edit-icon:hover::after,
+.profile__image-edit-icon:focus-visible::after {
+  opacity: 1;
+}
+
+@media screen and (max-width: 740px) {
+  .profile__image-edit-icon {
+    margin-inline-end: 10px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .profile__image-edit-icon {
+    margin-inline-end: 0;
+  }
+}

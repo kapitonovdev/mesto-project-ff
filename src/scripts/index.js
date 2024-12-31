@@ -9,7 +9,7 @@ import {
   handleCardLike
 } from "../components/card.js";
 import { enableValidation, clearValidation } from '../components/validation.js';
-import { getUserInfo, getCards } from '../components/api.js';
+import { getUserInfo, getCards, setUserInfo, setUserAvatar } from '../components/api.js';
 
 
 const validationConfig = {
@@ -46,6 +46,12 @@ const profileEditForm = document.forms["edit-profile"];
 const profileNameInput = document.forms["edit-profile"].name;
 // const profileJobInput = profileEditForm.querySelector(".popup__input_type_description");
 const profileJobInput = document.forms["edit-profile"].description;
+
+// Попап добавления аватара
+const avatarEditPopup = document.querySelector('.popup_type_avatar');
+const avatarEditForm = document.forms["edit-avatar"]; // <form name="edit-avatar" ...>
+const avatarInput = avatarEditForm.querySelector('.popup__input_type_url');
+
 
 // Форма добавления карточки и её поля
 const cardAddForm = cardAddPopup.querySelector(".popup__form");
@@ -85,11 +91,19 @@ function handleProfileEditFormSubmit(event) {
   event.preventDefault();
 
   // Обновляем данные на странице из значений формы
-  profileName.textContent = profileNameInput.value;
-  profileJob.textContent = profileJobInput.value;
+  const newProfileName = profileNameInput.value;
+  const newProfileJob = profileJobInput.value;
 
-  // Закрываем попап после сохранения изменений
-  closePopup(profileEditPopup);
+  setUserInfo({ name: newProfileName, about: newProfileJob })
+    .then((updateduserData) => {
+      profileName.textContent = newProfileName;
+      profileJob.textContent = newProfileJob;
+      profileAvatar.style.backgroundImage = `url(${updateduserData.avatar})`;
+
+      // Закрываем попап после сохранения изменений
+      closePopup(profileEditPopup);
+    })
+    .catch((error) => console.log('Не удалось обновить информацию о пользователе', error));
 }
 
 // Обработчик добавления новой карточки
@@ -154,6 +168,42 @@ function updateUserInfo({ name, about, avatar }) {
   profileJob.textContent = about;
   profileAvatar.style.backgroundImage = `url(${avatar})`;
 }
+
+function handleAvatarFormSubmit(event) {
+  event.preventDefault();
+
+  // Берём ссылку из инпута
+  const newAvatarLink = avatarInput.value;
+
+  // Вызываем наш API
+  setUserAvatar(newAvatarLink)
+    .then((updatedData) => {
+      // Обновлённые данные с сервера
+      // В updatedData.avatar лежит новый URL
+      profileAvatar.style.backgroundImage = `url(${updatedData.avatar})`;
+
+      // Закрываем попап
+      closePopup(avatarEditPopup);
+
+      // Сброс формы (очистка поля)
+      avatarEditForm.reset();
+    })
+    .catch((err) => {
+      console.error('Ошибка при обновлении аватара:', err);
+      // Можно показать сообщение об ошибке
+    });
+}
+
+avatarEditForm.addEventListener('submit', handleAvatarFormSubmit);
+
+const avatarEditIcon = document.querySelector('.profile__image-edit-icon');
+avatarEditIcon.addEventListener('click', () => {
+  // Перед открытием можно очистить ошибки валидации, если надо
+  clearValidation(avatarEditForm, validationConfig);
+  avatarEditForm.reset();
+
+  openPopup(avatarEditPopup);
+});
 
 
 document.addEventListener('DOMContentLoaded', () => {
