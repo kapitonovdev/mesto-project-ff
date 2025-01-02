@@ -20,12 +20,10 @@ function request(url, options = {}) {
   });
 }
 
-// Функция получения информации о пользователе
 export function getUserInfo() {
   return request('/users/me');
 }
 
-// Функция получения списка карточек
 export function getCards() {
   return request('/cards');
 }
