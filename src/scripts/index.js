@@ -107,6 +107,13 @@ function handleProfileEditButtonClick() {
 function handleProfileEditFormSubmit(event) {
   event.preventDefault();
 
+    
+  const submitButton = profileEditForm.querySelector(validationConfig.submitButtonSelector);
+  const originalButtonText = submitButton.textContent;
+
+  // Меняем текст кнопки на "Сохранение..."
+  submitButton.textContent = "Сохранение...";
+
   // Обновляем данные на странице из значений формы
   const newProfileName = profileNameInput.value;
   const newProfileJob = profileJobInput.value;
@@ -120,12 +127,21 @@ function handleProfileEditFormSubmit(event) {
       // Закрываем попап после сохранения изменений
       closePopup(profileEditPopup);
     })
-    .catch((error) => console.log('Не удалось обновить информацию о пользователе', error));
+    .catch((error) => console.log('Не удалось обновить информацию о пользователе', error))
+    .finally(() => {
+      submitButton.textContent = originalButtonText;
+    });
 }
 
 // Обработчик добавления новой карточки
 function handleCardAddFormSubmit(event) {
   event.preventDefault();
+
+  const submitButton = cardAddForm.querySelector(validationConfig.submitButtonSelector);
+  const originalButtonText = submitButton.textContent;
+
+  // Меняем текст кнопки на "Сохранение..."
+  submitButton.textContent = "Сохранение...";
 
   const newCardData = {
     name: cardNameInput.value,
@@ -151,6 +167,9 @@ function handleCardAddFormSubmit(event) {
     })
     .catch((error) => {
       console.error('Ошибка при добавлении карточки:', error);
+    })
+    .finally(() => {
+      submitButton.textContent = originalButtonText;
     });
 }
 
@@ -217,6 +236,12 @@ function updateUserInfo({ name, about, avatar }) {
 function handleAvatarFormSubmit(event) {
   event.preventDefault();
 
+  const submitButton = avatarEditForm.querySelector(validationConfig.submitButtonSelector);
+  const originalButtonText = submitButton.textContent;
+
+  // Меняем текст кнопки на "Сохранение..."
+  submitButton.textContent = "Сохранение...";
+
   // Берём ссылку из инпута
   const newAvatarLink = avatarInput.value;
 
@@ -235,6 +260,9 @@ function handleAvatarFormSubmit(event) {
     })
     .catch((err) => {
       console.error('Ошибка при обновлении аватара:', err);
+    })
+    .finally(() => {
+      submitButton.textContent = originalButtonText;
     });
 }
 
