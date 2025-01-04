@@ -1,5 +1,4 @@
-import { addLike, removeLike, deleteCard } from './api.js';
-import { openPopup, closePopup } from './modal.js';
+import { addLike, removeLike } from './api.js';
 
 // Создание карточки
 export function createCard(cardData, { onImageClick, onDeleteClick, onLikeClick, userId }) {
@@ -58,24 +57,4 @@ export function handleCardLike(cardData, likeButton, likeCountElement) {
       })
       .catch((err) => console.log('Ошибка при удалении лайка:', err));
   }
-}
-
-export function handleCardDelete(cardData, cardElement, deletePopup, deleteForm) {
-  openPopup(deletePopup);
-
-  const handleSubmit = (evt) => {
-    evt.preventDefault();
-
-    deleteCard(cardData._id)
-      .then(() => {
-        cardElement.remove();
-        closePopup(deletePopup);
-      })
-      .catch((err) => console.error('Ошибка при удалении карточки:', err))
-      .finally(() => {
-        deleteForm.removeEventListener('submit', handleSubmit);
-      });
-  };
-
-  deleteForm.addEventListener('submit', handleSubmit);
 }

@@ -5,8 +5,7 @@ import {
 } from "../components/modal.js";
 import { 
   createCard,
-  handleCardLike,
-  handleCardDelete
+  handleCardLike
 } from "../components/card.js";
 import { 
   enableValidation,
@@ -17,7 +16,8 @@ import {
   getCards,
   setUserInfo,
   setUserAvatar,
-  addCard
+  addCard,
+  deleteCard
 } from '../components/api.js';
 
 
@@ -68,6 +68,9 @@ const cardNameInput = cardAddForm.querySelector(".popup__input_type_card-name");
 const cardLinkInput = cardAddForm.querySelector(".popup__input_type_url");
 
 let currentUserId;
+let cardIdToDelete = null;
+let cardElementToDelete = null;
+
 
 // Функция открытия imagePopup
 function handleCardClick(name, link) {
@@ -82,8 +85,7 @@ function renderCards(cardsData) {
   cardsData.forEach((cardData) => {
     const cardElement = createCard(cardData, {
       onImageClick: handleCardClick,
-      onDeleteClick: (cardData, cardElement) =>
-        handleCardDelete(cardData, cardElement, deleteCardPopup, deleteCardForm),
+      onDeleteClick: handleDeleteClick,
       onLikeClick: handleCardLike,
       userId: currentUserId
     });
@@ -139,8 +141,7 @@ function handleCardAddFormSubmit(event) {
     .then((cardFromServer) => {
       const newCardElement = createCard(cardFromServer, {
         onImageClick: handleCardClick,
-        onDeleteClick: (cardData, cardElement) =>
-          handleCardDelete(cardData, cardElement, deleteCardPopup, deleteCardForm),
+        onDeleteClick: handleDeleteClick,
         onLikeClick: handleCardLike,
         userId: currentUserId
       });
@@ -236,10 +237,30 @@ function renderLoading(formElement, isLoading, loadingText = "Сохранени
   }
 }
 
+function handleDeleteClick(cardData, cardElement) {
+  cardIdToDelete = cardData._id;
+  cardElementToDelete = cardElement;
+  openPopup(deleteCardPopup);
+}
+
 // Обработчики
 profileEditForm.addEventListener("submit", handleProfileEditFormSubmit);
 cardAddForm.addEventListener("submit", handleCardAddFormSubmit);
 avatarEditForm.addEventListener('submit', handleAvatarFormSubmit);
+deleteCardForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  
+  if (!cardIdToDelete) return;
+  
+  deleteCard(cardIdToDelete)
+    .then(() => {
+      cardElementToDelete.remove();
+      cardIdToDelete = null;
+      cardElementToDelete = null;
+      closePopup(deleteCardPopup);
+    })
+    .catch((err) => console.log('Ошибка при удалении карточки:', err));
+});
 
 enableValidation(validationConfig);
 initializePopups();
